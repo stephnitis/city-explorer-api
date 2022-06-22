@@ -1,27 +1,32 @@
 'use strict';
 
 require('dotenv').config();
-const { response } = require('express');
+// const response  = require('express');
 const express = require('express');
-
+const cors = require('cors');
 const app = express();
+const weatherData = require('./data/weather.json');
+app.use(cors());
 
 const PORT = process.env.PORT || 3002;
 
+console.log(weatherData);
+
 class Forecast {
-  static weatherData = require('./data/weather.json');
   constructor(weatherObject){
-    this.data = Forecast.weatherData[type] || [];
+    this.datetime = weatherObject.datetime;
+    this.description = weatherObject.description;
   }
 }
 
 app.get('/weatherData', (request, response) => {
-  const type = request.query.type;
-  console.log('Query Params', request.query);
-  console.log('Type:', type);
+  const searchQuery = request.query;
+  console.log(searchQuery);
+  let searchResult = weatherData.find(object => object.city_name === searchQuery);
+ 
 
-  const result = new Forecast(type);
-  
+  const result = new Forecast(searchResult);
+  console.log(result);
 })
 
 // app.get('/hello', (request, response) => {
