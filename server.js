@@ -1,24 +1,25 @@
 'use strict';
 
 require('dotenv').config();
-// const response  = require('express');
 const express = require('express');
 const cors = require('cors');
+
+const axios = require('axios');
+// const weatherData = require('./data/weather.json');
 const app = express();
-const axios =require('axios');
-const weatherData = require('./data/weather.json');
 app.use(cors());
 
 const PORT = process.env.PORT || 3002;
 
 app.get('/weather', async (req, res, next) => {
+  console.log('hello');
   try {
     let lat = req.query.lat;
     let lon = req.query.lon;
     let url = `https://api.weatherbit.io/v2.0/normals?lat=${lat}&lon=${lon}&start_day=02-02&end_day=03-01&tp=daily&key=${process.env.WEATHER_API_KEY}`;
     let results = await axios.get(url);
-    let groomedData = results.data.data.map(day => new Forecast(day));
-    res.status(200).send(groomedData);
+    let weatherObject = results.data.data.map(day => new Forecast(day));
+    res.status(200).send(weatherObject);
     console.log(results);
   } catch (error) {
     next(error)
@@ -28,8 +29,10 @@ app.get('/weather', async (req, res, next) => {
 
 class Forecast {
   constructor(weatherObject){
-    this.datetime = weatherObject.datetime;
-    this.description = weatherObject.weather.description;
+    this.lat = weatherObject.lat;
+    this.lon = weatherObject.lon;
+    // this.datetime = weatherObject.datetime;
+    // this.description = weatherObject.weather.description;
   }
 }
 
@@ -50,7 +53,7 @@ app.get('*', (request, response) => {
   response.status(404).send('Does Not Compute : Not Found');
 });
 
-app.use((error, req, res, next) =>{
+app.use((error, req, res, next) => {
   console.log(error.message);
   res.status(500).send(error.message);
 });
