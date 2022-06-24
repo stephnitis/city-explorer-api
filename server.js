@@ -37,12 +37,7 @@ app.get('/movies', getMovies);
 
 
 
-class Movie {
-  constructor(film) {
-    this.title = film.original_title;
-    this.overview = film.overview;
-  }
-}
+
 
 // app.get('/weatherData', (request, response) => {
 //   const searchQuery = request.query.searchQuery;
