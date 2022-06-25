@@ -25,7 +25,7 @@ async function getWeather (req, res, next){
     cache[key] = {
     data : weatherObject,
     timestamp: Date.now()
-  }
+    }
     res.status(200).send(weatherObject);
     
     } 
