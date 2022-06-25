@@ -17,7 +17,8 @@ async function getMovies(req, res, next){
    res.status(200).send(movieObject);
    console.log(movieObject);
   } catch (error) {
-   next(error)
+   next(error);
+   console.log(error.message);
   }
 };
 
@@ -25,6 +26,8 @@ class Movie {
   constructor(film) {
     this.title = film.original_title;
     this.overview = film.overview;
+    //https://image.tmdb.org/t/p/w300/poster_path
+    // this.src = film.poster_path ? film.poster_path : 'myImg.jpg'
   }
 }
 
