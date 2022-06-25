@@ -2,9 +2,7 @@
 
 const axios = require('axios');
 
-let cache = {
-  weatherCache: []
-};
+let cache = {};
 
 async function getWeather (req, res, next){
   try {
@@ -12,18 +10,24 @@ async function getWeather (req, res, next){
     let lon = req.query.lon;
 
     let key = lat + lon + 'Cache';
+    let timeCache = 1000 * 60 * 60;
 
-    if (cache[key]) {
+    if (cache[key] && Date.now() - cache[key].timestamp < timeCache) {
+      console.log('Cache Money Bitz')
       res.status(200).send(cache[key].data);
-    } else {        
+    } else {
+      console.log ('cache me outside');
+    
     let url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&lang=en&units=I&days=5&lat=${lat}&lon=${lon}`;
     let results = await axios.get(url);
-    let weatherObject = results.data.data.map(day => new Forecast(day));
-
+    let weatherObject = results.data.data.map(day => new Forecast(day));    
     
-    cache[key] = weatherObject;
+    cache[key] = {
+    data : weatherObject,
+    timestamp: Date.now()
+  }
     res.status(200).send(weatherObject);
-    console.log('Cache Money Bitz')
+    
     } 
     } catch (error) {
     next(error)
